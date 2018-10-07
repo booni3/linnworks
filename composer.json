@@ -1,0 +1,20 @@
+{
+    "name": "booni3/linnworks",
+    "description": "Linnworks API wrapper",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Booni3",
+            "email": "adam@profilestudio.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Booni3\\Linnworks\\": "src"
+        }
+    }
+}
