@@ -30,9 +30,11 @@ class Linnworks
         if(!$this->bearer) $this->refreshToken();
         return new static ($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
-
+    
     /**
      * Refresh the token using AuthorizeByApplication
+     *
+     * @throws \ReflectionException
      */
     public function refreshToken()
     {
