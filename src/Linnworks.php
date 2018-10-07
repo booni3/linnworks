@@ -34,7 +34,7 @@ class Linnworks
      * @param $applicationId
      * @param $applicationSecret
      * @param $token
-     * @return Linnworks;
+     * @return \Booni3\Linnworks\Linnworks;
      * @throws \ReflectionException
      */
     public static function make($applicationId, $applicationSecret, $token)
