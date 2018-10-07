@@ -10,8 +10,6 @@ Wrapper for the Linnworks API, as documented at [http://apps.linnworks.net/Api](
 
 ## Usage
 
-Using Facade:
-
     $linnworks = Linnworks::make('applicationId', 'applicationSecret', 'token');
     $orders = $linnworks->Orders()->getOpenOrders(25,
         1,

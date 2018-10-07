@@ -11,26 +11,28 @@ class Linnworks
     protected $server;
 
 
-    public function __construct($applicationId, $applicationSecret, $token, $bearer = null, $server = null)
+    public function __construct($applicationId, $applicationSecret, $token)
     {
         $this->applicationId = $applicationId;
         $this->applicationSecret = $applicationSecret;
         $this->token = $token;
-        $this->bearer = $bearer;
-        $this->server = $server;
+
+        if(!$this->bearer) $this->refreshToken();
     }
 
     /**
      * Create instance of Client
      *
+     * @param $applicationId
+     * @param $applicationSecret
+     * @param $token
      * @return Linnworks
      */
-    public function make()
+    public static function make($applicationId, $applicationSecret, $token)
     {
-        if(!$this->bearer) $this->refreshToken();
-        return new static ($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
+        return new static ($applicationId, $applicationSecret, $token);
     }
-    
+
     /**
      * Refresh the token using AuthorizeByApplication
      *
