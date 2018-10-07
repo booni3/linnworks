@@ -11,6 +11,14 @@ class Linnworks
     protected $server;
 
 
+    /**
+     * Linnworks constructor.
+     *
+     * @param $applicationId
+     * @param $applicationSecret
+     * @param $token
+     * @throws \ReflectionException
+     */
     public function __construct($applicationId, $applicationSecret, $token)
     {
         $this->applicationId = $applicationId;
@@ -26,7 +34,8 @@ class Linnworks
      * @param $applicationId
      * @param $applicationSecret
      * @param $token
-     * @return Linnworks
+     * @return Linnworks;
+     * @throws \ReflectionException
      */
     public static function make($applicationId, $applicationSecret, $token)
     {

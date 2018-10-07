@@ -9,9 +9,10 @@ Wrapper for the Linnworks API, as documented at [http://apps.linnworks.net/Api](
     composer require booni3/linnworks
 
 ## Usage
-
+        
     $linnworks = Linnworks::make('applicationId', 'applicationSecret', 'token');
-    $orders = $linnworks->Orders()->getOpenOrders(25,
+    $orders = $linnworks->Orders()->getOpenOrders(
+        25,
         1,
         null,
         null,
