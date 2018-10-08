@@ -90,6 +90,15 @@ class Linnworks
     }
 
     /**
+     * @return \Booni3\Linnworks\Api\ReturnsRefunds
+     * @throws \ReflectionException
+     */
+    public function ReturnsRefunds()
+    {
+        return $this->getApiInstance('ReturnsRefunds');
+    }
+
+    /**
      * @param $method
      * @param array $parameters
      * @throws \Exception
