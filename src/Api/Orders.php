@@ -49,4 +49,11 @@ class Orders extends Api
         ]);
     }
 
+    public function SetLabelsPrinted(array $orderIds)
+    {
+        return $this->_post('Orders/SetLabelsPrinted', [
+            "orderIds" => json_encode($orderIds)
+        ]);
+    }
+
 }
