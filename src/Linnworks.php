@@ -10,6 +10,12 @@ class Linnworks
     protected $bearer;
     protected $server;
 
+    // Status codes
+    const UNPAID = 0;
+    const PAID = 1;
+    const RETURN = 2;
+    const PENDING = 3;
+    const RESEND = 4;
 
     /**
      * Linnworks constructor.
@@ -50,6 +56,7 @@ class Linnworks
     public function refreshToken()
     {
         $res = $this->Auth()->AuthorizeByApplication();
+        if(!isset($res['Token'])) throw new \Exception('Could not login.' . $res['message'] ?? '');
         $this->bearer = $res['Token'];
         $this->server = $res['Server'];
     }

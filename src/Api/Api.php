@@ -57,7 +57,10 @@ class Api
             ]);
             return json_decode((string)$response->getBody(), true);
         } catch (ClientException $e) {
-            throw $e;
+            // 400 errors
+            if($e->getResponse()->getStatusCode() === 404) throw new \Exception('Page not found', 404);
+            $responseBodyAsString = $e->getResponse()->getBody()->getContents();
+            return json_decode((string)$responseBodyAsString, true);
         }
     }
 
