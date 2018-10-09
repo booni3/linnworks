@@ -10,6 +10,8 @@ class Linnworks
     protected $bearer;
     protected $server;
 
+    const BASE_URI = 'https://api.linnworks.net';
+
     // Status codes
     const UNPAID = 0;
     const PAID = 1;

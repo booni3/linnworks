@@ -3,6 +3,7 @@
 
 namespace Booni3\Linnworks\Api;
 
+use Booni3\Linnworks\Linnworks;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
@@ -71,7 +72,7 @@ class Api
      */
     protected function getClient()
     {
-        $server = $this->server ?? 'https://api.linnworks.net';
+        $server = $this->server ?? Linnworks::BASE_URI;
         return new Client([
             'base_uri' => $server . '/api/',
             'handler' => $this->createHandler()
