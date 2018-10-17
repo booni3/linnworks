@@ -64,11 +64,10 @@ class Orders extends Api
         ]);
     }
 
-    public function processFulfilmentCentreOrder($orderId, array $info)
+    public function processFulfilmentCentreOrder($orderId)
     {
         return $this->_post('Orders/ProcessFulfilmentCentreOrder',[
-            'orderId' => $orderId,
-            'info' => json_encode($info)
+            'orderId' => $orderId
         ]);
     }
 
