@@ -56,4 +56,24 @@ class Orders extends Api
         ]);
     }
 
+    public function setShippingInfo($orderId, array $info)
+    {
+        return $this->_post('Orders/SetOrderShippingInfo',[
+            'orderId' => $orderId,
+            'info' => json_encode($info)
+        ]);
+    }
+
+    public function processFulfilmentCentreOrder($orderId, array $info)
+    {
+        return $this->_post('Orders/ProcessFulfilmentCentreOrder',[
+            'orderId' => $orderId,
+            'info' => json_encode($info)
+        ]);
+    }
+
+
+
+
+
 }

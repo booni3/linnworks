@@ -108,6 +108,15 @@ class Linnworks
     }
 
     /**
+     * @return \Booni3\Linnworks\Api\ReturnsRefunds
+     * @throws \ReflectionException
+     */
+    public function PostalServices()
+    {
+        return $this->getApiInstance('PostalServices');
+    }
+
+    /**
      * @param $method
      * @param array $parameters
      * @throws \Exception
