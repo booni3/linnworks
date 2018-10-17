@@ -72,8 +72,4 @@ class Orders extends Api
         ]);
     }
 
-
-
-
-
 }
