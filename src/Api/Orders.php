@@ -64,6 +64,16 @@ class Orders extends Api
         ]);
     }
 
+    public function processOrder($orderId, $scanPerformed, $locationId, $allowZeroAndNegativeBatchQty)
+    {
+        return $this->_post('Orders/ProcessOrder',[
+            'orderId' => $orderId,
+            'scanPerformed' => $scanPerformed,
+            'locationId' => $locationId,
+            'allowZeroAndNegativeBatchQty' => $allowZeroAndNegativeBatchQty,
+        ]);
+    }
+
     public function processFulfilmentCentreOrder($orderId)
     {
         return $this->_post('Orders/ProcessFulfilmentCentreOrder',[
