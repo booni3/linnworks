@@ -2,11 +2,11 @@
 
 namespace Booni3\Linnworks\Api;
 
-class PostalServices extends Api
+class PostalServices extends ApiClient
 {
     public function getPostalServices()
     {
-        return $this->_get('PostalServices/GetPostalServices');
+        return $this->get('PostalServices/GetPostalServices');
     }
 
 

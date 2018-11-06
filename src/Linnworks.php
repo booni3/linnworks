@@ -2,6 +2,12 @@
 
 namespace Booni3\Linnworks;
 
+use Booni3\Linnworks\Api\Auth;
+use Booni3\Linnworks\Api\Locations;
+use Booni3\Linnworks\Api\Orders;
+use Booni3\Linnworks\Api\PostalServices;
+use Booni3\Linnworks\Api\ReturnsRefunds;
+
 class Linnworks
 {
     private $applicationId;
@@ -11,8 +17,6 @@ class Linnworks
     protected $server;
 
     const BASE_URI = 'https://api.linnworks.net';
-
-    // Status codes
     const UNPAID = 0;
     const PAID = 1;
     const RETURN = 2;
@@ -25,7 +29,7 @@ class Linnworks
      * @param $applicationId
      * @param $applicationSecret
      * @param $token
-     * @throws \ReflectionException
+     * @throws \Exception
      */
     public function __construct($applicationId, $applicationSecret, $token)
     {
@@ -43,88 +47,46 @@ class Linnworks
      * @param $applicationSecret
      * @param $token
      * @return \Booni3\Linnworks\Linnworks;
-     * @throws \ReflectionException
+     * @throws \Exception
      */
-    public static function make($applicationId, $applicationSecret, $token)
+    public static function make(string $applicationId, string $applicationSecret, string $token)
     {
         return new static ($applicationId, $applicationSecret, $token);
     }
 
-    /**
-     * Refresh the token using AuthorizeByApplication
-     *
-     * @throws \ReflectionException
-     */
-    public function refreshToken()
+    public function refreshToken() : void
     {
-        $res = $this->Auth()->AuthorizeByApplication();
-        if(!isset($res['Token'])) throw new \Exception('Could not login.' . $res['message'] ?? '');
-        $this->bearer = $res['Token'];
-        $this->server = $res['Server'];
+        $response = $this->auth()->AuthorizeByApplication();
+        if(!isset($response['Token']))
+            throw new \Exception('Could not login.' . $response['message'] ?? '');
+
+        $this->bearer = $response['Token'];
+        $this->server = $response['Server'];
     }
 
-    /**
-     * Create instance of API based off method called in
-     *
-     * @param $method
-     * @return mixed
-     * @throws \ReflectionException
-     */
-    protected function getApiInstance($method)
+    protected function auth() : Auth
     {
-        $class = "\\Booni3\\Linnworks\\Api\\".ucwords($method);
-        if (class_exists($class) && ! (new \ReflectionClass($class))->isAbstract()) {
-            return new $class($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
-        }
-        throw new \BadMethodCallException("Undefined method [{$method}] called.");
+        return new Auth($this->applicationId, $this->applicationSecret, $this->token);
     }
 
-
-    /**
-     * @return \Booni3\Linnworks\Api\Auth
-     * @throws \ReflectionException
-     */
-    public function Auth()
+    public function orders() : Orders
     {
-        return $this->getApiInstance('auth');
+        return new Orders($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
-    /**
-     * @return \Booni3\Linnworks\Api\Orders
-     * @throws \ReflectionException
-     */
-    public function Orders()
+    public function locations() : Locations
     {
-        return $this->getApiInstance('orders');
+        return new Locations($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
-    /**
-     * @return \Booni3\Linnworks\Api\ReturnsRefunds
-     * @throws \ReflectionException
-     */
-    public function ReturnsRefunds()
+    public function postalServices() : PostalServices
     {
-        return $this->getApiInstance('ReturnsRefunds');
+        return new PostalServices($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
-    /**
-     * @return \Booni3\Linnworks\Api\ReturnsRefunds
-     * @throws \ReflectionException
-     */
-    public function PostalServices()
+    public function returnsRefunds() : ReturnsRefunds
     {
-        return $this->getApiInstance('PostalServices');
-    }
-
-    /**
-     * @param $method
-     * @param array $parameters
-     * @throws \Exception
-     * @return mixed
-     */
-    public function __call($method, array $parameters)
-    {
-        return $this->getApiInstance($method);
+        return new ReturnsRefunds($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
 }

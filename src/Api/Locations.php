@@ -4,12 +4,12 @@
 namespace Booni3\Linnworks\Api;
 
 
-class Locations extends Api
+class Locations extends ApiClient
 {
 
     public function GetCountries()
     {
-        return $this->_get('Inventory/GetCountries');
+        return $this->get('Inventory/GetCountries');
     }
 
 }

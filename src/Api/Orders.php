@@ -2,11 +2,11 @@
 
 namespace Booni3\Linnworks\Api;
 
-class Orders extends Api
+class Orders extends ApiClient
 {
     public function getOpenOrders($entriesPerPage, $pageNumber, $filters, $sorting, $fulfilmentCenter, $additionalFilters)
     {
-        return $this->_get('Orders/GetOpenOrders', [
+        return $this->get('Orders/GetOpenOrders', [
             "entriesPerPage" => $entriesPerPage,
             "pageNumber" => $pageNumber,
             "filters" => $filters,
@@ -18,7 +18,7 @@ class Orders extends Api
 
     public function getAllOpenOrders($filters, $sorting, $fulfilmentCenter, $additionalFilter)
     {
-        return $this->_get('Orders/GetAllOpenOrders', [
+        return $this->get('Orders/GetAllOpenOrders', [
             "filters" => $filters,
             "sorting" => $sorting,
             "fulfilmentCenter" => $fulfilmentCenter,
@@ -28,14 +28,14 @@ class Orders extends Api
 
     public function GetOrdersById(array $pkOrderIds)
     {
-        return $this->_get('Orders/GetOrdersById', [
+        return $this->get('Orders/GetOrdersById', [
             "pkOrderIds" => json_encode($pkOrderIds)
         ]);
     }
 
     public function MoveToLocation(array $orderIds, $pkStockLocationId)
     {
-        return $this->_get('Orders/MoveToLocation', [
+        return $this->get('Orders/MoveToLocation', [
             "orderIds" => json_encode($orderIds),
             "pkStockLocationId" => $pkStockLocationId
         ]);
@@ -43,7 +43,7 @@ class Orders extends Api
 
     public function ChangeShippingMethod(array $orderIds, $shippingMethod)
     {
-        return $this->_get('Orders/ChangeShippingMethod', [
+        return $this->get('Orders/ChangeShippingMethod', [
             "orderIds" => json_encode($orderIds),
             "shippingMethod" => $shippingMethod
         ]);
@@ -80,5 +80,4 @@ class Orders extends Api
             'orderId' => $orderId
         ]);
     }
-
 }

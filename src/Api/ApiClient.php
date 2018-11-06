@@ -10,7 +10,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use Psr\Http\Message\RequestInterface;
 
-class Api
+class ApiClient
 {
     protected $applicationId;
     protected $applicationSecret;
@@ -27,29 +27,10 @@ class Api
         $this->server = $server;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function _get($url = null, array $parameters = [])
-    {
-        return $this->execute('get', $url, $parameters);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function _post($url = null, array $parameters = [])
-    {
-        return $this->execute('post', $url, $parameters);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function execute($httpMethod, $url, array $parameters = [])
+    public function get($url = null, array $parameters = []) : array
     {
         try {
-            $response = $this->getClient()->{$httpMethod}($url, [
+            $response = $this->getClient()->get($url, [
                 'form_params' => $parameters,
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
@@ -58,19 +39,30 @@ class Api
             ]);
             return json_decode((string)$response->getBody(), true);
         } catch (ClientException $e) {
-            // 400 errors
-            if($e->getResponse()->getStatusCode() === 404) throw new \Exception('Page not found', 404);
             $responseBodyAsString = $e->getResponse()->getBody()->getContents();
-            return json_decode((string)$responseBodyAsString, true);
+            throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
         }
     }
 
-    /**
-     * Returns an Http client instance.
-     *
-     * @return Client
-     */
-    protected function getClient()
+    public function post($url = null, array $parameters = []) : array
+    {
+        try {
+            $response = $this->getClient()->post($url, [
+                'form_params' => $parameters,
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Accept' => 'application/json',
+                    'Authorization' => $this->bearer ?? ''
+                ]
+            ]);
+            return json_decode((string)$response->getBody(), true);
+        } catch (ClientException $e) {
+            $responseBodyAsString = $e->getResponse()->getBody()->getContents();
+            throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
+        }
+    }
+
+    public function getClient() : Client
     {
         $server = $this->server ?? Linnworks::BASE_URI;
         return new Client([
@@ -79,12 +71,7 @@ class Api
         ]);
     }
 
-    /**
-     * Create the client handler.
-     *
-     * @return HandlerStack
-     */
-    protected function createHandler()
+    public function createHandler() : HandlerStack
     {
         $handler_stack = HandlerStack::create();
         $handler_stack->push(Middleware::retry(
@@ -96,31 +83,7 @@ class Api
                 return $retries * 200; //0.2, 0.4, 0.6 seconds etc..
             }
         ));
-        $handler_stack->push(Middleware::mapRequest(function (RequestInterface $r) {
-            //
-            return $r;
-        }));
-//        $handler_stack->push($this->addheader('Authorization', $this->bearer));
         return $handler_stack;
     }
 
-    /**
-     * Add header to request
-     *
-     * @param $header
-     * @param $value
-     * @return \Closure
-     */
-    protected function addheader($header, $value)
-    {
-        return function (callable $handler) use ($header, $value) {
-            return function (
-                RequestInterface $request,
-                array $options
-            ) use ($handler, $header, $value) {
-                $request = $request->withHeader($header, $value);
-                return $handler($request, $options);
-            };
-        };
-    }
 }
