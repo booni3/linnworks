@@ -51,14 +51,14 @@ class Orders extends ApiClient
 
     public function SetLabelsPrinted(array $orderIds)
     {
-        return $this->_post('Orders/SetLabelsPrinted', [
+        return $this->post('Orders/SetLabelsPrinted', [
             "orderIds" => json_encode($orderIds)
         ]);
     }
 
     public function setShippingInfo($orderId, array $info)
     {
-        return $this->_post('Orders/SetOrderShippingInfo',[
+        return $this->post('Orders/SetOrderShippingInfo',[
             'orderId' => $orderId,
             'info' => json_encode($info)
         ]);
@@ -66,7 +66,7 @@ class Orders extends ApiClient
 
     public function processOrder($orderId, $scanPerformed, $locationId, $allowZeroAndNegativeBatchQty)
     {
-        return $this->_post('Orders/ProcessOrder',[
+        return $this->post('Orders/ProcessOrder',[
             'orderId' => $orderId,
             'scanPerformed' => $scanPerformed,
             'locationId' => $locationId,
@@ -76,7 +76,7 @@ class Orders extends ApiClient
 
     public function processFulfilmentCentreOrder($orderId)
     {
-        return $this->_post('Orders/ProcessFulfilmentCentreOrder',[
+        return $this->post('Orders/ProcessFulfilmentCentreOrder',[
             'orderId' => $orderId
         ]);
     }

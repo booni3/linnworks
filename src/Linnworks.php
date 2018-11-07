@@ -7,6 +7,7 @@ use Booni3\Linnworks\Api\Locations;
 use Booni3\Linnworks\Api\Orders;
 use Booni3\Linnworks\Api\PostalServices;
 use Booni3\Linnworks\Api\ReturnsRefunds;
+use Booni3\Linnworks\Api\Stock;
 
 class Linnworks
 {
@@ -17,20 +18,13 @@ class Linnworks
     protected $server;
 
     const BASE_URI = 'https://api.linnworks.net';
+
     const UNPAID = 0;
     const PAID = 1;
     const RETURN = 2;
     const PENDING = 3;
     const RESEND = 4;
 
-    /**
-     * Linnworks constructor.
-     *
-     * @param $applicationId
-     * @param $applicationSecret
-     * @param $token
-     * @throws \Exception
-     */
     public function __construct($applicationId, $applicationSecret, $token)
     {
         $this->applicationId = $applicationId;
@@ -40,16 +34,7 @@ class Linnworks
         if(!$this->bearer) $this->refreshToken();
     }
 
-    /**
-     * Create instance of Client
-     *
-     * @param $applicationId
-     * @param $applicationSecret
-     * @param $token
-     * @return \Booni3\Linnworks\Linnworks;
-     * @throws \Exception
-     */
-    public static function make(string $applicationId, string $applicationSecret, string $token)
+    public static function make(string $applicationId, string $applicationSecret, string $token) : Linnworks
     {
         return new static ($applicationId, $applicationSecret, $token);
     }
@@ -87,6 +72,11 @@ class Linnworks
     public function returnsRefunds() : ReturnsRefunds
     {
         return new ReturnsRefunds($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
+    }
+
+    public function stock() : Stock
+    {
+        return new Stock($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
 }
