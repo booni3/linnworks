@@ -2,6 +2,7 @@
 
 namespace Booni3\Linnworks;
 
+use Booni3\Linnworks\Api\ApiClient;
 use Booni3\Linnworks\Api\Auth;
 use Booni3\Linnworks\Api\Locations;
 use Booni3\Linnworks\Api\Orders;
