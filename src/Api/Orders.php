@@ -33,6 +33,20 @@ class Orders extends ApiClient
         ]);
     }
 
+    public function SearchProcessedOrdersPaged(int $pageNum = 1, int $numEntriesPerPage = 50, string $from = "", string $to = "", string $dateType = "PROCESSED", string $searchField = "", bool $exactMatch = false, string $searchTerm = "")
+    {
+        return $this->get('ProcessedOrders/SearchProcessedOrdersPaged', [
+            "from" => $from,
+            "to" => $to,
+            "dateType" => $dateType,
+            "searchField" => $searchField,
+            "exactMatch" => $exactMatch,
+            "searchTerm" => $searchTerm,
+            "pageNum" => $pageNum,
+            "numEntriesPerPage" => $numEntriesPerPage,
+        ]);
+    }
+
     public function MoveToLocation(array $orderIds = [], string $pkStockLocationId = "")
     {
         return $this->get('Orders/MoveToLocation', [
