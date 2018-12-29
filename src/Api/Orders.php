@@ -4,6 +4,7 @@ namespace Booni3\Linnworks\Api;
 
 class Orders extends ApiClient
 {
+
     public function getOpenOrders($fulfilmentCenter, int $entriesPerPage = 25, int $pageNumber = 1, string $filters = "", array $sorting = [], string $additionalFilters = "")
     {
         return $this->get('Orders/GetOpenOrders', [
@@ -92,6 +93,109 @@ class Orders extends ApiClient
     {
         return $this->post('Orders/ProcessFulfilmentCentreOrder',[
             'orderId' => $orderId
+        ]);
+    }
+
+    public function createOrder(OrderItems $orderItems,
+                                string $locationName = "",
+                                string $matchPostalServiceTag = "",
+                                string $source = "",
+                                string $subSource = "",
+                                string $referenceNumber = "",
+                                string $externalReference = "",
+                                string $receivedDate = "",
+                                string $dispatchBy = "",
+                                string $currency = "",
+                                string $channelBuyerName = "",
+                                string $deliveryEmailAddress = "",
+                                string $deliveryAddress1 = "",
+                                string $deliveryAddress2 = "",
+                                string $deliveryAddress3 = "",
+                                string $deliveryTown = "",
+                                string $deliveryRegion = "",
+                                string $deliveryPostCode = "",
+                                string $deliveryCountryName = "",
+                                string $deliveryFullName = "",
+                                string $deliveryCompanyName = "",
+                                string $deliveryPhoneNumber = "",
+                                string $deliveryIso3CountryCode = "",
+                                string $billingAddress1 = "",
+                                string $billingAddress2 = "",
+                                string $billingAddress3 = "",
+                                string $billingTown = "",
+                                string $billingRegion = "",
+                                string $billingPostCode = "",
+                                string $billingCountryName = "",
+                                string $billingFullName = "",
+                                string $billingCompanyName = "",
+                                string $billingPhoneNumber = "",
+                                string $billingIso3CountryCode = "",
+                                float $shippingCost = 0,
+                                int $shippingTaxRate = 20,
+                                string $mappingSource = "",
+                                string $orderState = "None",
+                                string $paymentStatus = "Paid",
+                                string $paidDate = "Today"
+    ){
+        $order = [
+            //minimum requirements
+            "Source" => $source,
+            "SubSource" => $subSource,
+            "ReferenceNumber" => $referenceNumber,
+            "ExternalReference" => $externalReference,
+            "ReceivedDate" => date('c', strtotime($receivedDate)),
+            "DispatchBy" => date('c', strtotime($dispatchBy)),
+
+            //Basic info
+            "Currency" => $currency, //USD EUR
+            'ChannelBuyerName' => $channelBuyerName,
+            'MatchPostalServiceTag' => $matchPostalServiceTag,
+            'DeliveryAddress' => [
+                'EmailAddress' => $deliveryEmailAddress,
+                'Address1' => $deliveryAddress1,
+                'Address2' => $deliveryAddress2,
+                'Address3' => $deliveryAddress3,
+                'Town' =>  $deliveryTown,
+                'Region' =>  $deliveryRegion,
+                'PostCode' =>  $deliveryPostCode,
+                'Country' =>  $deliveryCountryName,
+                'FullName' =>  $deliveryFullName,
+                'Company' =>  $deliveryCompanyName,
+                'PhoneNumber' =>  $deliveryPhoneNumber,
+                'MatchCountryCode' =>  $deliveryIso3CountryCode
+            ],
+            'BillingAddress' => [
+                'Address1' => $billingAddress1,
+                'Address2' => $billingAddress2,
+                'Address3' => $billingAddress3,
+                'Town' =>  $billingTown,
+                'Region' =>  $billingRegion,
+                'PostCode' =>  $billingPostCode,
+                'Country' =>  $billingCountryName,
+                'FullName' =>  $billingFullName,
+                'Company' =>  $billingCompanyName,
+                'PhoneNumber' =>  $billingPhoneNumber,
+                'MatchCountryCode' =>  $billingIso3CountryCode
+            ],
+
+            // items
+            'AutomaticallyLinkBySKU' => true, //if channel mapping does not work, link by sku
+            'MappingSource' => $mappingSource, //use mapping from another channel for SKU's
+            'OrderItems'=> $orderItems->getOrderItems(),
+            'PostalServiceCost' => $shippingCost, //cost inclusive of cost and after discount
+            'PostalServiceTaxRate' => $shippingTaxRate,
+
+            //state
+            'OrderState' => $orderState,
+            'PaymentStatus' => $paymentStatus,
+            'PaidOn' => date('c', strtotime($paidDate))
+
+        ];
+
+
+        return $this->post('Orders/CreateOrders',[
+            'Location' => $locationName,
+            'Orders' => json_encode([$order])
         ]);
     }
 }
