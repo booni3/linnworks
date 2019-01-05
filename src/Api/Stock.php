@@ -29,7 +29,7 @@ class Stock extends ApiClient
 
     public function getStockHistory(string $stockItemId, string $locationId, int $entriesPerPage = 100, int $pageNumber = 1)
     {
-        return $this->get('Stock/GetStockItems', [
+        return $this->get('Stock/GetItemChangesHistory', [
             "stockItemId" => $stockItemId,
             "locationId" => $locationId,
             "entriesPerPage" => $entriesPerPage,
