@@ -37,4 +37,14 @@ class Stock extends ApiClient
         ]);
     }
 
+    public function getStockItemByKey(string $locationId = "", string $key = "") : array
+    {
+        return $this->get('Stock/GetStockItemsByKey', [
+            "stockIdentifier" => json_encode([
+                "Key" => $key,
+                "LocationId" => $locationId,
+            ]),
+        ]);
+    }
+
 }
