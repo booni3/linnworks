@@ -34,6 +34,13 @@ class Orders extends ApiClient
         ]);
     }
 
+    public function GetOrdersByNumOrderId(int $numOrderId = 1)
+    {
+        return $this->get('Orders/GetOrderDetailsByNumOrderId', [
+            "OrderId" => $numOrderId
+        ]);
+    }
+
     public function SearchProcessedOrdersPaged(int $pageNum = 1, int $numEntriesPerPage = 50, string $from = "", string $to = "", string $dateType = "PROCESSED", string $searchField = "", string $exactMatch = "false", string $searchTerm = "")
     {
         return $this->get('ProcessedOrders/SearchProcessedOrdersPaged', [
