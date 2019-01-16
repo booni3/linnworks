@@ -205,4 +205,15 @@ class Orders extends ApiClient
             'Orders' => json_encode([$order])
         ]);
     }
+
+    public function cancelOrder(string $orderId, string $fulfilmentCenter, float $refund = 0, string $note = "" )
+    {
+        return $this->post('Orders/CancelOrder',[
+            'orderId' => $orderId,
+            'fulfilmentCenter' => $fulfilmentCenter,
+            'refund' => $refund,
+            'note' => $note,
+        ]);
+    }
+
 }
