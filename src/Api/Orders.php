@@ -41,11 +41,11 @@ class Orders extends ApiClient
         ]);
     }
 
-    public function SearchProcessedOrdersPaged(int $pageNum = 1, int $numEntriesPerPage = 50, string $from = "", string $to = "", string $dateType = "PROCESSED", string $searchField = "", string $exactMatch = "false", string $searchTerm = "")
+    public function SearchProcessedOrdersPaged(int $pageNum = 1, int $numEntriesPerPage = 50, string $from = "-10000 days", string $to = "now", string $dateType = "PROCESSED", string $searchField = "", string $exactMatch = "false", string $searchTerm = "")
     {
         return $this->get('ProcessedOrders/SearchProcessedOrdersPaged', [
-            "from" => $from,
-            "to" => $to,
+            "from" => date('Y-m-d\TH:i:sP', strtotime($from)),
+            "to" => date('Y-m-d\TH:i:sP', strtotime($to)),
             "dateType" => $dateType,
             "searchField" => $searchField,
             "exactMatch" => $exactMatch,
@@ -153,6 +153,8 @@ class Orders extends ApiClient
             "ExternalReference" => $externalReference,
             "ReceivedDate" => date('c', strtotime($receivedDate)),
             "DispatchBy" => date('c', strtotime($dispatchBy)),
+//            "DeliveryStartDate" => date('c', strtotime('15th January 2018')),
+//            "DeliveryEndDate" => "2019-02-12T11:12:33.4177471+01:00",
 
             //Basic info
             "Currency" => $currency, //USD EUR
@@ -200,7 +202,6 @@ class Orders extends ApiClient
 
         ];
 
-
         return $this->post('Orders/CreateOrders',[
             'Location' => $locationName,
             'Orders' => json_encode([$order])
@@ -216,5 +217,47 @@ class Orders extends ApiClient
             'note' => $note,
         ]);
     }
+
+//    public function setGeneralInfo(
+//        $guid
+//    ){
+//        $order = [
+////              "Status" => 1,
+////              "LabelPrinted" => true,
+////              "LabelError" => "sample string 3",
+////              "InvoicePrinted" => true,
+////              "PickListPrinted" => true,
+////              "IsRuleRun" => true,
+////              "Notes" => 7,
+////              "PartShipped" => true,
+////              "Marker" => 64,
+////              "IsParked" => true,
+////              "Identifiers" => null,
+////              "ReferenceNum" => "sample string 10",
+////              "SecondaryReference" => "sample string 11",
+////              "ExternalReferenceNum" => "sample string 12",
+////              "ReceivedDate" => "2018-10-03T11:12:33.5138145+01:00",
+////              "Source" => "sample string 14",
+////              "SubSource" => "sample string 15",
+////              "SiteCode" => "sample string 16",
+////              "HoldOrCancel" => true,
+////              "DespatchByDate" => "2018-10-03T11:12:33.5138145+01:00",
+//              "ScheduledDelivery" => [
+//                  "From" => "2019-02-12T11:12:33.5138145+01:00",
+//                  "To" => "2019-12-12T11:12:33.5138145+01:00"
+//              ],
+//              "HasScheduledDelivery" => true,
+////              "Location" => "201863fe-a0a0-4af3-8956-ac185631f82b",
+////              "NumItems" => 20,
+////              "StockAllocationType" => 0
+//        ];
+//
+//        return $this->post('Orders/SetOrderGeneralInfo',[
+//            'orderId' => $guid,
+//            'info' => json_encode($order),
+//            'wasDraft' => false,
+//        ]);
+//
+//    }
 
 }
