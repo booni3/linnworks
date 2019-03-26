@@ -39,13 +39,7 @@ class ApiClient
                         'Authorization' => $this->bearer
                     ]
                 ]);
-                $res = json_decode((string)$response->getBody(), true);
-                // Check for throttle
-                if(isset($res['errors'][0]['status']) && $res['errors'][0]['status'] == '429'){
-                    $throttled = true;
-                } else {
-                    return $res;
-                }
+                return json_decode((string)$response->getBody(), true);
             } catch (ClientException $e) {
                 if($this->isThrottled($e)){
                     $throttled = true;
@@ -70,13 +64,7 @@ class ApiClient
                         'Authorization' => $this->bearer ?? ''
                     ]
                 ]);
-                $res = json_decode((string)$response->getBody(), true);
-                // Check for throttle
-                if(isset($res['errors'][0]['status']) && $res['errors'][0]['status'] == '429'){
-                    $throttled = true;
-                } else {
-                    return $res;
-                }
+                return json_decode((string)$response->getBody(), true);
             } catch (ClientException $e) {
                 if($this->isThrottled($e)){
                     $throttled = true;
@@ -111,6 +99,7 @@ class ApiClient
         ));
         return $handler_stack;
     }
+
 
 
     protected function isThrottled(ClientException $e) : bool
