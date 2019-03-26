@@ -29,37 +29,53 @@ class ApiClient
 
     public function get($url = null, array $parameters = []) : array
     {
-        try {
-            $response = $this->getClient()->get($url, [
-                'form_params' => $parameters,
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Authorization' => $this->bearer
-                ]
-            ]);
-            return json_decode((string)$response->getBody(), true);
-        } catch (ClientException $e) {
-            $responseBodyAsString = $e->getResponse()->getBody()->getContents();
-            throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
-        }
+           do{
+            $throttled = false;
+            try {
+                $response = $this->getClient()->get($url, [
+                    'form_params' => $parameters,
+                    'headers' => [
+                        'Content-Type' => 'application/x-www-form-urlencoded',
+                        'Authorization' => $this->bearer
+                    ]
+                ]);
+                return json_decode((string)$response->getBody(), true);
+            } catch (ClientException $e) {
+                if($e->getResponse()->getStatusCode() == 429){
+                    sleep(1);
+                    $throttled = true;
+                } else {
+                    $responseBodyAsString = $e->getResponse()->getBody()->getContents();
+                    throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
+                }
+            }
+        } while ($throttled);
     }
 
     public function post($url = null, array $parameters = []) : array
     {
-        try {
-            $response = $this->getClient()->post($url, [
-                'form_params' => $parameters,
-                'headers' => [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Accept' => 'application/json',
-                    'Authorization' => $this->bearer ?? ''
-                ]
-            ]);
-            return json_decode((string)$response->getBody(), true);
-        } catch (ClientException $e) {
-            $responseBodyAsString = $e->getResponse()->getBody()->getContents();
-            throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
-        }
+        do{
+            $throttled = false;
+            try {
+                $response = $this->getClient()->post($url, [
+                    'form_params' => $parameters,
+                    'headers' => [
+                        'Content-Type' => 'application/x-www-form-urlencoded',
+                        'Accept' => 'application/json',
+                        'Authorization' => $this->bearer ?? ''
+                    ]
+                ]);
+                return json_decode((string)$response->getBody(), true);
+            } catch (ClientException $e) {
+                if($e->getResponse()->getStatusCode() == 429){
+                    sleep(1);
+                    $throttled = true;
+                } else {
+                    $responseBodyAsString = $e->getResponse()->getBody()->getContents();
+                    throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
+                }
+            }
+        } while ($throttled);
     }
 
     public function getClient() : Client
