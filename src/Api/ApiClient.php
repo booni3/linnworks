@@ -41,8 +41,7 @@ class ApiClient
                 ]);
                 return json_decode((string)$response->getBody(), true);
             } catch (ClientException $e) {
-                if($e->getResponse()->getStatusCode() == 429){
-                    sleep(1);
+                if($this->isThrottled($e)){
                     $throttled = true;
                 } else {
                     $responseBodyAsString = $e->getResponse()->getBody()->getContents();
@@ -67,8 +66,7 @@ class ApiClient
                 ]);
                 return json_decode((string)$response->getBody(), true);
             } catch (ClientException $e) {
-                if($e->getResponse()->getStatusCode() == 429){
-                    sleep(1);
+                if($this->isThrottled($e)){
                     $throttled = true;
                 } else {
                     $responseBodyAsString = $e->getResponse()->getBody()->getContents();
@@ -100,6 +98,26 @@ class ApiClient
             }
         ));
         return $handler_stack;
+    }
+
+    protected function isThrottled(ClientException $e) : bool
+    {
+        $throttle = false;
+        try{
+            $array = json_decode($e->getResponse()->getBody()->getContents());
+            if(isset($array[0]['status'])){
+                if($array[0]['status'] == '429') $throttle = true;
+            }
+        } catch(\Exception $e){
+            //do nothing
+        }
+
+        if($e->getCode() == 429 || $e->getResponse()->getStatusCode() == 429 || $throttle){
+            sleep(2);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
