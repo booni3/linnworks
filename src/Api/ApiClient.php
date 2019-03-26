@@ -29,7 +29,7 @@ class ApiClient
 
     public function get($url = null, array $parameters = []) : array
     {
-           do{
+       do{
             $throttled = false;
             try {
                 $response = $this->getClient()->get($url, [
