@@ -41,7 +41,7 @@ class Orders extends ApiClient
         ]);
     }
 
-    public function SearchProcessedOrdersPaged(int $pageNum = 1, int $numEntriesPerPage = 50, string $from = "-10000 days", string $to = "now", string $dateType = "PROCESSED", string $searchField = "", string $exactMatch = "false", string $searchTerm = "")
+    public function SearchProcessedOrdersPaged(int $pageNum = 1, int $numEntriesPerPage = 50, string $from = "-7200 days", string $to = "now", string $dateType = "PROCESSED", string $searchField = "", string $exactMatch = "false", string $searchTerm = "")
     {
         return $this->get('ProcessedOrders/SearchProcessedOrdersPaged', [
             "from" => date('Y-m-d\TH:i:sP', strtotime($from)),
