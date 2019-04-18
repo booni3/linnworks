@@ -44,8 +44,7 @@ class ApiClient
                 if($this->isThrottled($e)){
                     $throttled = true;
                 } else {
-                    $responseBodyAsString = $e->getResponse()->getBody()->getContents();
-                    throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
+                    throw new \Exception((string)$e->getResponse()->getBody(), $e->getResponse()->getStatusCode());
                 }
             }
         } while ($throttled);
@@ -69,8 +68,7 @@ class ApiClient
                 if($this->isThrottled($e)){
                     $throttled = true;
                 } else {
-                    $responseBodyAsString = $e->getResponse()->getBody()->getContents();
-                    throw new \Exception($responseBodyAsString, $e->getResponse()->getStatusCode());
+                    throw new \Exception((string)$e->getResponse()->getBody(), $e->getResponse()->getStatusCode());
                 }
             }
         } while ($throttled);
