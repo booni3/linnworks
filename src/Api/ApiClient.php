@@ -79,7 +79,8 @@ class ApiClient
         $server = $this->server ?? Linnworks::BASE_URI;
         return new Client([
             'base_uri' => $server . '/api/',
-            'handler' => $this->createHandler()
+            'handler' => $this->createHandler(),
+            'timeout' => 15
         ]);
     }
 
