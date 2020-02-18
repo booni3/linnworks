@@ -17,6 +17,16 @@
             "Booni3\\Linnworks\\": "src"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Booni3\\Linnworks\\LinnworksServiceProvider"
+            ],
+            "aliases": {
+                "Linnworks": "Booni3\\Linnworks\\LinnworksFacade"
+            }
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

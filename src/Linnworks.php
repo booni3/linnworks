@@ -2,7 +2,6 @@
 
 namespace Booni3\Linnworks;
 
-use Booni3\Linnworks\Api\ApiClient;
 use Booni3\Linnworks\Api\Auth;
 use Booni3\Linnworks\Api\Locations;
 use Booni3\Linnworks\Api\Orders;
@@ -32,10 +31,12 @@ class Linnworks
         $this->applicationSecret = $applicationSecret;
         $this->token = $token;
 
-        if(!$this->bearer) $this->refreshToken();
+        if(!$this->bearer) {
+            $this->refreshToken();
+        }
     }
 
-    public static function make(string $applicationId, string $applicationSecret, string $token) : Linnworks
+    public static function make(string $applicationId, string $applicationSecret, string $token): Linnworks
     {
         return new static ($applicationId, $applicationSecret, $token);
     }
@@ -43,6 +44,7 @@ class Linnworks
     public function refreshToken() : void
     {
         $response = $this->auth()->AuthorizeByApplication();
+
         if(!isset($response['Token']))
             throw new \Exception('Could not login.' . $response['message'] ?? '');
 
@@ -50,32 +52,32 @@ class Linnworks
         $this->server = $response['Server'];
     }
 
-    protected function auth() : Auth
+    protected function auth(): Auth
     {
         return new Auth($this->applicationId, $this->applicationSecret, $this->token);
     }
 
-    public function orders() : Orders
+    public function orders(): Orders
     {
         return new Orders($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
-    public function locations() : Locations
+    public function locations(): Locations
     {
         return new Locations($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
-    public function postalServices() : PostalServices
+    public function postalServices(): PostalServices
     {
         return new PostalServices($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
-    public function returnsRefunds() : ReturnsRefunds
+    public function returnsRefunds(): ReturnsRefunds
     {
         return new ReturnsRefunds($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
 
-    public function stock() : Stock
+    public function stock(): Stock
     {
         return new Stock($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
     }
