@@ -18,7 +18,7 @@ class ApiClient
     protected $bearer;
     protected $server;
 
-    public function __construct($applicationId, $applicationSecret, $token, $bearer = null, $server = null)
+    public function __construct($client, $applicationId, $applicationSecret, $token, $bearer = null, $server = null)
     {
         $this->applicationId = $applicationId;
         $this->applicationSecret = $applicationSecret;
@@ -77,6 +77,7 @@ class ApiClient
     public function getClient() : Client
     {
         $server = $this->server ?? Linnworks::BASE_URI;
+
         return new Client([
             'base_uri' => $server . '/api/',
             'handler' => $this->createHandler(),

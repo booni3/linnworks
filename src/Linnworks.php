@@ -25,28 +25,29 @@ class Linnworks
     const PENDING = 3;
     const RESEND = 4;
 
-    public function __construct($applicationId, $applicationSecret, $token)
+    public function __construct(array $config)
     {
-        $this->applicationId = $applicationId;
-        $this->applicationSecret = $applicationSecret;
-        $this->token = $token;
+        $this->applicationId = $config['applicationId'];
+        $this->applicationSecret = $config['applicationSecret'];
+        $this->token = $config['token'];
 
-        if(!$this->bearer) {
+        if(! $this->bearer) {
             $this->refreshToken();
         }
     }
 
-    public static function make(string $applicationId, string $applicationSecret, string $token): Linnworks
+    public static function make(array $config): self
     {
-        return new static ($applicationId, $applicationSecret, $token);
+        return new static ($config);
     }
 
     public function refreshToken() : void
     {
         $response = $this->auth()->AuthorizeByApplication();
 
-        if(!isset($response['Token']))
+        if(!isset($response['Token'])){
             throw new \Exception('Could not login.' . $response['message'] ?? '');
+        }
 
         $this->bearer = $response['Token'];
         $this->server = $response['Server'];
