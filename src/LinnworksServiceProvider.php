@@ -37,8 +37,8 @@ class LinnworksServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom( __DIR__.'/../config/linnworks.php', 'linnworks');
-        $this->app->singleton(Linnworks::class, function ($app) {
 
+        $this->app->singleton(Linnworks::class, function ($app) {
             $config = $app->make('config');
 
             $applicationId = $config->get('linnworks.applicationId');
@@ -47,6 +47,7 @@ class LinnworksServiceProvider extends ServiceProvider
 
             return new Linnworks($applicationId, $applicationSecret, $token);
         });
+
         $this->app->alias(Linnworks::class, 'linnworks');
     }
 

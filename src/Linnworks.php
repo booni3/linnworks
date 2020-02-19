@@ -8,78 +8,90 @@ use Booni3\Linnworks\Api\Orders;
 use Booni3\Linnworks\Api\PostalServices;
 use Booni3\Linnworks\Api\ReturnsRefunds;
 use Booni3\Linnworks\Api\Stock;
+use Booni3\Linnworks\Exceptions\LinnworksAuthenticationException;
+use GuzzleHttp\Client as GuzzleClient;
 
 class Linnworks
 {
-    private $applicationId;
-    private $applicationSecret;
-    private $token;
-    protected $bearer;
-    protected $server;
-
     const BASE_URI = 'https://api.linnworks.net';
 
-    const UNPAID = 0;
-    const PAID = 1;
-    const RETURN = 2;
-    const PENDING = 3;
-    const RESEND = 4;
+    /** @var GuzzleClient */
+    protected $client;
 
-    public function __construct($applicationId, $applicationSecret, $token)
+    /** @var array */
+    protected $config;
+
+    /** @var string */
+    protected $bearer;
+
+    /** @var string */
+    protected $server;
+
+    public function __construct(array $config, GuzzleClient $client = null)
     {
-        $this->applicationId = $applicationId;
-        $this->applicationSecret = $applicationSecret;
-        $this->token = $token;
+        $this->client = $client ?: $this->makeClient();
+        $this->config = $config;
 
-        if(!$this->bearer) {
+        if(! $this->bearer){
             $this->refreshToken();
         }
     }
 
-    public static function make(string $applicationId, string $applicationSecret, string $token): Linnworks
+    public static function make(array $config, GuzzleClient $client = null): self
     {
-        return new static ($applicationId, $applicationSecret, $token);
+        return new static ($config, $client);
     }
 
-    public function refreshToken() : void
+    private function makeClient(): GuzzleClient
     {
-        $response = $this->auth()->AuthorizeByApplication();
+        return new GuzzleClient([
+            'timeout' => $this->config['timeout'] ?? 15
+        ]);
+    }
 
-        if(!isset($response['Token']))
-            throw new \Exception('Could not login.' . $response['message'] ?? '');
+    private function refreshToken() : void
+    {
+        $parameters = [
+            "ApplicationId" => $this->config['applicationId'],
+            "ApplicationSecret" => $this->config['applicationSecret'],
+            "Token" => $this->config['token']
+        ];
+
+        $response = (new Auth($this->client, self::BASE_URI.'/api/', null))
+            ->AuthorizeByApplication($parameters);
+
+        if(! ($response['Token'] ?? null)){
+            throw new LinnworksAuthenticationException($response['message'] ?? '');
+        }
 
         $this->bearer = $response['Token'];
-        $this->server = $response['Server'];
-    }
 
-    protected function auth(): Auth
-    {
-        return new Auth($this->applicationId, $this->applicationSecret, $this->token);
+        $this->server = $response['Server'] .'/api/';
     }
 
     public function orders(): Orders
     {
-        return new Orders($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
+        return new Orders($this->client, $this->server, $this->bearer);
     }
 
     public function locations(): Locations
     {
-        return new Locations($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
+        return new Locations($this->client, $this->server, $this->bearer);
     }
 
     public function postalServices(): PostalServices
     {
-        return new PostalServices($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
+        return new PostalServices($this->client, $this->server, $this->bearer);
     }
 
     public function returnsRefunds(): ReturnsRefunds
     {
-        return new ReturnsRefunds($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
+        return new ReturnsRefunds($this->client, $this->server, $this->bearer);
     }
 
     public function stock(): Stock
     {
-        return new Stock($this->applicationId, $this->applicationSecret, $this->token, $this->bearer, $this->server);
+        return new Stock($this->client, $this->server, $this->bearer);
     }
 
 }

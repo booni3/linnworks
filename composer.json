@@ -12,9 +12,17 @@
     "require": {
         "guzzlehttp/guzzle": "^6.3"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
     "autoload": {
         "psr-4": {
             "Booni3\\Linnworks\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Booni3\\Linnworks\\Tests\\": "tests"
         }
     },
     "extra": {
