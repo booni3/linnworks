@@ -4,13 +4,8 @@ namespace Booni3\Linnworks\Api;
 
 class Auth extends ApiClient
 {
-
-    public function AuthorizeByApplication()
+    public function AuthorizeByApplication($params)
     {
-        return $this->get('Auth/AuthorizeByApplication', [
-            "applicationId" => $this->applicationId,
-            "applicationSecret" => $this->applicationSecret,
-            "token" => $this->token
-        ]);
+        return $this->get('Auth/AuthorizeByApplication', $params);
     }
 }
