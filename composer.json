@@ -1,7 +1,6 @@
 {
     "name": "booni3/linnworks",
     "description": "Linnworks API wrapper",
-    "version": "0.1.1",
     "license": "MIT",
     "authors": [
         {
