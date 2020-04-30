@@ -15,7 +15,7 @@ class ApiClient
     private $bearer;
 
     /** @var string */
-    private string $server;
+    private $server;
 
     public function __construct(Client $client, string $server = null, string $bearer = null)
     {
