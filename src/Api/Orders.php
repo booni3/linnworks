@@ -71,6 +71,14 @@ class Orders extends ApiClient
         ]);
     }
 
+    public function changeStatus(array $orderIds = [], int $status)
+    {
+        return $this->get('Orders/ChangeShippingMethod', [
+            "orderIds" => json_encode($orderIds),
+            "status" => $status
+        ]);
+    }
+
     public function SetLabelsPrinted(array $orderIds = [])
     {
         return $this->post('Orders/SetLabelsPrinted', [
