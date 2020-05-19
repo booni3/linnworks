@@ -210,6 +210,11 @@ class Orders extends ApiClient
 
         ];
 
+        // remove null
+        $order = array_filter($order, function($row){
+            return ! is_null($row);
+        });
+
         return $this->post('Orders/CreateOrders',[
             'Location' => $locationName,
             'Orders' => json_encode([$order])
