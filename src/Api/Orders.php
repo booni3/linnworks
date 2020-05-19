@@ -206,7 +206,7 @@ class Orders extends ApiClient
             //state
             'OrderState' => $orderState,
             'PaymentStatus' => $paymentStatus,
-            'PaidOn' => $paidDate ? date('c', strtotime($paidDate)) : ''
+            'PaidOn' => $paidDate ? date('c', strtotime($paidDate)) : null
 
         ];
 
