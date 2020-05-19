@@ -20,15 +20,19 @@ class OrderItems
                                  bool $isService = false,
                                  float $lineDiscount = 0
     ){
+        if(! $sku){
+            return;
+        }
+
         $this->orderItems[] = array_filter([
             'TaxCostInclusive'=> $taxCostInclusive,
             'UseChannelTax'=> $useChannelTax,
-            'PricePerUnit'=> $pricePerUnit,
+            'PricePerUnit'=> $pricePerUnit < 0 ? 0 : $pricePerUnit,
             'Qty'=> $qty,
             'TaxRate'=> $taxRate,
             'LineDiscount'=> $lineDiscount,
             'ItemNumber'=> $this->itemNumber++,
-            'ChannelSKU'=> $sku ?: '?',
+            'ChannelSKU'=> $sku,
             'IsService'=> $isService,
             'ItemTitle'=> $title
         ], function($row){
