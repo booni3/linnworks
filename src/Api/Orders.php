@@ -151,7 +151,8 @@ class Orders extends ApiClient
         string $mappingSource = "",
         string $orderState = "None",
         string $paymentStatus = "Paid",
-        string $paidDate = "Today"
+        string $paidDate = "Today",
+        array $notes = []
     ){
         $order = [
             //minimum requirements
@@ -206,7 +207,10 @@ class Orders extends ApiClient
             //state
             'OrderState' => $orderState,
             'PaymentStatus' => $paymentStatus,
-            'PaidOn' => $paidDate ? date('c', strtotime($paidDate)) : null
+            'PaidOn' => $paidDate ? date('c', strtotime($paidDate)) : null,
+            
+            //Notes - Particularly useful for personalised items.
+            'Notes' => $notes
 
         ];
 
