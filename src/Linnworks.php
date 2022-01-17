@@ -74,7 +74,7 @@ class Linnworks
         return new Orders($this->client, $this->server, $this->bearer);
     }
 
-    public function locations(): Inventory
+    public function inventory(): Inventory
     {
         return new Inventory($this->client, $this->server, $this->bearer);
     }
