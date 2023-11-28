@@ -2,6 +2,8 @@
 
 namespace Booni3\Linnworks\Api;
 
+use Booni3\Linnworks\Exceptions\LinnworksStatusIsNullException;
+
 class Orders extends ApiClient
 {
 
@@ -71,8 +73,11 @@ class Orders extends ApiClient
         ]);
     }
 
-    public function changeStatus(array $orderIds = [], int $status)
+    public function changeStatus(array $orderIds = [], int $status = null)
     {
+        if (is_null($status)) {
+            throw new LinnworksStatusIsNullException('The $status parameter cannot be null');
+        }
         return $this->get('Orders/ChangeStatus', [
             "orderIds" => json_encode($orderIds),
             "status" => $status
