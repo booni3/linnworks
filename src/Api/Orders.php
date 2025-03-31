@@ -79,6 +79,14 @@ class Orders extends ApiClient
         ]);
     }
 
+    public function changeOrderTag(array $orderIds = [], ?int $status = null)
+    {
+        return $this->get('Orders/ChangeOrderTag', [
+            "orderIds" => json_encode($orderIds),
+            "tag" => $status === null ? 'null' : (string) $status
+        ]);
+    }
+
     public function SetLabelsPrinted(array $orderIds = [])
     {
         return $this->post('Orders/SetLabelsPrinted', [
@@ -91,6 +99,14 @@ class Orders extends ApiClient
         return $this->post('Orders/SetOrderShippingInfo',[
             'orderId' => $orderId,
             'info' => json_encode($info)
+        ]);
+    }
+
+    public function LockOrders(array $orderIds = [], bool $lock = true)
+    {
+        return $this->post('Orders/LockOrder', [
+            "orderIds" => json_encode($orderIds),
+            "lockOrder" => $lock ? 'true' : 'false'
         ]);
     }
 
@@ -234,47 +250,5 @@ class Orders extends ApiClient
             'note' => $note,
         ]);
     }
-
-//    public function setGeneralInfo(
-//        $guid
-//    ){
-//        $order = [
-////              "Status" => 1,
-////              "LabelPrinted" => true,
-////              "LabelError" => "sample string 3",
-////              "InvoicePrinted" => true,
-////              "PickListPrinted" => true,
-////              "IsRuleRun" => true,
-////              "Notes" => 7,
-////              "PartShipped" => true,
-////              "Marker" => 64,
-////              "IsParked" => true,
-////              "Identifiers" => null,
-////              "ReferenceNum" => "sample string 10",
-////              "SecondaryReference" => "sample string 11",
-////              "ExternalReferenceNum" => "sample string 12",
-////              "ReceivedDate" => "2018-10-03T11:12:33.5138145+01:00",
-////              "Source" => "sample string 14",
-////              "SubSource" => "sample string 15",
-////              "SiteCode" => "sample string 16",
-////              "HoldOrCancel" => true,
-////              "DespatchByDate" => "2018-10-03T11:12:33.5138145+01:00",
-//              "ScheduledDelivery" => [
-//                  "From" => "2019-02-12T11:12:33.5138145+01:00",
-//                  "To" => "2019-12-12T11:12:33.5138145+01:00"
-//              ],
-//              "HasScheduledDelivery" => true,
-////              "Location" => "201863fe-a0a0-4af3-8956-ac185631f82b",
-////              "NumItems" => 20,
-////              "StockAllocationType" => 0
-//        ];
-//
-//        return $this->post('Orders/SetOrderGeneralInfo',[
-//            'orderId' => $guid,
-//            'info' => json_encode($order),
-//            'wasDraft' => false,
-//        ]);
-//
-//    }
 
 }
