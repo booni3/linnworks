@@ -58,7 +58,9 @@ class ApiClient
         $json = json_decode((string) $response->getBody(), true);
 
         if(json_last_error() !== JSON_ERROR_NONE){
-            throw new LinnworksResponseCouldNotBeParsed((string) $response->getBody());
+            $body = (string) $response->getBody();
+            if(! $body) return [];
+            throw new LinnworksResponseCouldNotBeParsed($body);
         }
 
         return $json;
