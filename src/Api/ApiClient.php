@@ -51,6 +51,19 @@ class ApiClient
         });
     }
 
+    public function postJson(string $url, array $payload = []): array
+    {
+        return $this->parse(function () use ($url, $payload) {
+            return $this->client->post($this->server.$url, [
+                'json' => $payload,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => $this->bearer ?? '',
+                ],
+            ]);
+        });
+    }
+
     private function parse(callable $callback)
     {
         $response = call_user_func($callback);

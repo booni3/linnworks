@@ -21,10 +21,17 @@ class Stock extends ApiClient
             "locationId" => $locationId,
             "entriesPerPage" => $entriesPerPage,
             "pageNumber" => $pageNumber,
-            "excludeComposites" => $excludeComposites,
-            "excludeVariations" => $excludeVariations,
-            "excludeBatches" => $excludeBatches,
+            "excludeComposites" => $excludeComposites ?: 'false',
+            "excludeVariations" => $excludeVariations ?: 'false',
+            "excludeBatches" => $excludeBatches ?: 'false',
         ]);
+    }
+
+    public function GetStockItemsByIds(array $StockItemIds = [])
+    {
+        return $this->postJson('Stock/GetStockItemsByIds', [
+            'StockItemIds' => $StockItemIds
+        ])['Items'] ?? [];
     }
 
     public function getStockHistory(string $stockItemId, string $locationId, int $entriesPerPage = 100, int $pageNumber = 1)
