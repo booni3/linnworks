@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Booni3\Linnworks\Api;
-
 
 class Inventory extends ApiClient
 {
-
     public function GetCountries()
     {
         return $this->get('Inventory/GetCountries');
@@ -16,10 +13,6 @@ class Inventory extends ApiClient
     {
         return $this->get('Inventory/GetChannels');
     }
-
-    /////////////////////////////////
-    // Get Inventory Items
-    /////////////////////////////////
 
     public function GetStockItemIdsBySKU(array $skus): array
     {
@@ -32,15 +25,8 @@ class Inventory extends ApiClient
 
     public function GetInventoryItemById(string $id = '')
     {
-        return $this->get('Inventory/GetInventoryItemById',
-            compact('id')
-        );
-
+        return $this->get('Inventory/GetInventoryItemById', compact('id'));
     }
-
-    /////////////////////////////////
-    // Inventory Item Compositions
-    /////////////////////////////////
 
     public function GetInventoryItemsCompositionByIds(array $ids): array
     {
@@ -51,61 +37,23 @@ class Inventory extends ApiClient
         ])['InventoryItemsCompositionByIds'] ?? [];
     }
 
-    public function GetInventoryItemCompositions(string $inventoryItemId = '', $getFullDetail = 'false')
+    public function GetInventoryItemCompositions(string $inventoryItemId = '', bool $getFullDetail = false)
     {
         return $this->get('Inventory/GetInventoryItemCompositions', [
             'inventoryItemId' => $inventoryItemId,
-            'getFullDetail' => true
+            'getFullDetail' => $getFullDetail
         ]);
-
     }
 
-    public function CreateInventoryItemCompositions($parentStockItemId, $childComponents)
+    public function CreateInventoryItemCompositions(string $parentStockItemId, array $childComponents)
     {
-        if (empty($childComponents)) {
-            throw new \Exception('At least one child component is required');
-        }
-
-        $payload = [
-            'inventoryItemCompositions' => []
-        ];
-
-        foreach ($childComponents as $component) {
-            // Build composition entry
-            $compositionItem = [
-                'StockItemId' => $parentStockItemId, // Your existing parent desk
-                'LinkedStockItemId' => $component['LinkedStockItemId'], // Child component to link
-                'Quantity' => (int)$component['Quantity'], // How many of this component
-            ];
-
-            $payload['inventoryItemCompositions'][] = $compositionItem;
-        }
-
+        $payload = $this->buildCompositionPayload($parentStockItemId, $childComponents);
         return $this->postJson('Inventory/CreateInventoryItemCompositions', $payload);
     }
 
-
-    public function UpdateInventoryItemCompositions($parentStockItemId, $childComponents)
+    public function UpdateInventoryItemCompositions(string $parentStockItemId, array $childComponents)
     {
-        if (empty($childComponents)) {
-            throw new \Exception('At least one child component is required');
-        }
-
-        $payload = [
-            'inventoryItemCompositions' => []
-        ];
-
-        foreach ($childComponents as $component) {
-            // Build composition entry
-            $compositionItem = [
-                'StockItemId' => $parentStockItemId, // Your existing parent desk
-                'LinkedStockItemId' => $component['LinkedStockItemId'], // Child component to link
-                'Quantity' => (int)$component['Quantity'], // How many of this component
-            ];
-
-            $payload['inventoryItemCompositions'][] = $compositionItem;
-        }
-
+        $payload = $this->buildCompositionPayload($parentStockItemId, $childComponents);
         return $this->postJson('Inventory/UpdateInventoryItemCompositions', $payload);
     }
 
@@ -117,4 +65,22 @@ class Inventory extends ApiClient
         ]);
     }
 
+    private function buildCompositionPayload(string $parentStockItemId, array $childComponents): array
+    {
+        if (empty($childComponents)) {
+            throw new \Exception('At least one child component is required');
+        }
+
+        $payload = ['inventoryItemCompositions' => []];
+
+        foreach ($childComponents as $component) {
+            $payload['inventoryItemCompositions'][] = [
+                'StockItemId' => $parentStockItemId,
+                'LinkedStockItemId' => $component['LinkedStockItemId'],
+                'Quantity' => (int)$component['Quantity'],
+            ];
+        }
+
+        return $payload;
+    }
 }
