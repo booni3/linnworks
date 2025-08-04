@@ -7,6 +7,12 @@ use Illuminate\Support\ServiceProvider;
 class LinnworksServiceProvider extends ServiceProvider
 {
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+    /**
      * Bootstrap services.
      *
      * @return void
@@ -20,13 +26,12 @@ class LinnworksServiceProvider extends ServiceProvider
 
     /**
      * Get the services provided by the provider.
-     * This will defer loading of the service until it is requested.
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
-        return [Linnworks::class];
+        return [Linnworks::class, 'linnworks'];
     }
 
     /**

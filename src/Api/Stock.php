@@ -54,4 +54,34 @@ class Stock extends ApiClient
         ]);
     }
 
+    private function validateStockLevels(array $stockLevels): void
+    {
+        foreach ($stockLevels as $index => $item) {
+            $missing = array_diff(['SKU', 'LocationId', 'Level'], array_keys($item));
+            if ($missing) {
+                throw new \InvalidArgumentException("Missing keys in stockLevels[$index]: " . implode(', ', $missing));
+            }
+        }
+    }
+
+    public function updateStockLevelsBySKU(array $stockLevels, string $changeSource = ''): array
+    {
+        $this->validateStockLevels($stockLevels);
+
+        return $this->postJson('Stock/UpdateStockLevelsBySKU', [
+            'stockLevels' => $stockLevels,
+            'changeSource' => $changeSource
+        ]);
+    }
+
+    public function SetStockLevel(array $stockLevels, string $changeSource = ''): array
+    {
+        $this->validateStockLevels($stockLevels);
+
+        return $this->postJson('Stock/SetStockLevel', [
+            'stockLevels' => $stockLevels,
+            'changeSource' => $changeSource
+        ]);
+    }
+
 }
