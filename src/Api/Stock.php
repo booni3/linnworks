@@ -34,6 +34,21 @@ class Stock extends ApiClient
         ])['Items'] ?? [];
     }
 
+    public function GetStockItemsFullByIds(array $stockItemIds = [], array $dataRequirements = [])
+    {
+        $request = [
+            'stockItemIds' => $stockItemIds
+        ];
+
+        if (!empty($dataRequirements)) {
+            $request['DataRequirements'] = $dataRequirements;
+        }
+
+        return $this->postJson('Stock/GetStockItemsFullByIds', [
+            'request' => $request
+        ])['StockItemsFullExtended'] ?? [];
+    }
+
     public function getStockHistory(string $stockItemId, string $locationId, int $entriesPerPage = 100, int $pageNumber = 1)
     {
         return $this->get('Stock/GetItemChangesHistory', [
@@ -51,6 +66,43 @@ class Stock extends ApiClient
                 "Key" => $key,
                 "LocationId" => $locationId,
             ]),
+        ]);
+    }
+
+    public function updateStockLevelsBySKU(array $stockLevels, string $changeSource = ''): array
+    {
+        foreach ($stockLevels as $index => $item) {
+            $missing = array_diff(['SKU', 'LocationId', 'Level'], array_keys($item));
+            if ($missing) {
+                throw new \InvalidArgumentException("Missing keys in stockLevels[$index]: " . implode(', ', $missing));
+            }
+        }
+
+        return $this->postJson('Stock/UpdateStockLevelsBySKU', [
+            'stockLevels' => $stockLevels,
+            'changeSource' => $changeSource
+        ]);
+    }
+
+    public function SetStockLevel(array $stockLevels, string $changeSource = ''): array
+    {
+        foreach ($stockLevels as $index => $item) {
+            $missing = array_diff(['SKU', 'LocationId', 'Level'], array_keys($item));
+            if ($missing) {
+                throw new \InvalidArgumentException("Missing keys in stockLevels[$index]: " . implode(', ', $missing));
+            }
+        }
+
+        return $this->postJson('Stock/SetStockLevel', [
+            'stockLevels' => $stockLevels,
+            'changeSource' => $changeSource
+        ]);
+    }
+    
+    public function UpdateStockLevelsBulk(array $items = []): array
+    {
+        return $this->postJson('Stock/UpdateStockLevelsBulk', [
+            'Items' => $items
         ]);
     }
 
