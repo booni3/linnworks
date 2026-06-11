@@ -2,6 +2,7 @@
 
 namespace Booni3\Linnworks;
 
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Support\ServiceProvider;
 
 class LinnworksServiceProvider extends ServiceProvider
@@ -49,8 +50,11 @@ class LinnworksServiceProvider extends ServiceProvider
             $applicationId = $config->get('linnworks.applicationId');
             $applicationSecret = $config->get('linnworks.applicationSecret');
             $token = $config->get('linnworks.token');
+            $client = $app->bound(GuzzleClient::class)
+                ? $app->make(GuzzleClient::class)
+                : null;
 
-            return new Linnworks(compact('applicationId', 'applicationSecret', 'token'));
+            return new Linnworks(compact('applicationId', 'applicationSecret', 'token'), $client);
         });
 
         $this->app->alias(Linnworks::class, 'linnworks');

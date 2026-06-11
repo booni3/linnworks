@@ -44,8 +44,7 @@ class LinnworksTest extends TestCase
         $this->client = new Client(['handler' => $handlerStack]);
     }
 
-    /** @test */
-    public function it_can_connect_to_linnworks()
+    public function test_it_can_connect_to_linnworks()
     {
         $this->mock->append(new Response(200, [], json_encode(['hello' => 'world'])));
 
@@ -56,8 +55,7 @@ class LinnworksTest extends TestCase
         $this->assertSame(['hello' => 'world'], $orders);
     }
 
-    /** @test */
-    public function it_will_throw_an_exception_with_invalid_json()
+    public function test_it_will_throw_an_exception_with_invalid_json()
     {
         $this->expectException(LinnworksResponseCouldNotBeParsed::class);
 
@@ -68,8 +66,7 @@ class LinnworksTest extends TestCase
         $linnworks->orders()->getOpenOrders('abc');
     }
 
-    /** @test */
-    public function it_will_throw_an_exception_when_not_logged_in()
+    public function test_it_will_throw_an_exception_when_not_logged_in()
     {
         $this->expectException(LinnworksAuthenticationException::class);
 

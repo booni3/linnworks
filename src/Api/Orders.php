@@ -71,7 +71,7 @@ class Orders extends ApiClient
         ]);
     }
 
-    public function changeStatus(array $orderIds = [], int $status)
+    public function changeStatus(array $orderIds, int $status)
     {
         return $this->get('Orders/ChangeStatus', [
             "orderIds" => json_encode($orderIds),

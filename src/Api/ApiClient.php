@@ -1,59 +1,66 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Booni3\Linnworks\Api;
 
 use Booni3\Linnworks\Exceptions\LinnworksResponseCouldNotBeParsed;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
+use Psr\Http\Message\ResponseInterface;
 
 class ApiClient
 {
-    /** @var Client  */
-    private $client;
-
-    /** @var string */
-    private $bearer;
-
-    /** @var string */
-    private $server;
-
-    public function __construct(Client $client, string $server = null, string $bearer = null)
-    {
-        $this->client = $client;
-        $this->server = $server;
-        $this->bearer = $bearer;
+    public function __construct(
+        private readonly Client $client,
+        private readonly ?string $server = null,
+        private readonly ?string $bearer = null
+    ) {
     }
 
-    public function get($url = null, array $parameters = []): array
+    /**
+     * @throws GuzzleException
+     * @throws LinnworksResponseCouldNotBeParsed
+     */
+    public function get(?string $url = null, array $parameters = []): array
     {
-        return $this->parse(function() use($url, $parameters){
+        return $this->parse(function () use ($url, $parameters): ResponseInterface {
             return $this->client->get($this->server.$url, [
                 'form_params' => $parameters,
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Authorization' => $this->bearer
-                ]
+                    'Authorization' => $this->bearer ?? '',
+                ],
             ]);
         });
     }
 
-    public function post($url = null, array $parameters = []): array
+    /**
+     * @throws GuzzleException
+     * @throws LinnworksResponseCouldNotBeParsed
+     */
+    public function post(?string $url = null, array $parameters = []): array
     {
-        return $this->parse(function() use($url, $parameters){
+        return $this->parse(function () use ($url, $parameters): ResponseInterface {
             return $this->client->post($this->server.$url, [
                 'form_params' => $parameters,
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
                     'Accept' => 'application/json',
-                    'Authorization' => $this->bearer ?? ''
-                ]
+                    'Authorization' => $this->bearer ?? '',
+                ],
             ]);
         });
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws LinnworksResponseCouldNotBeParsed
+     */
     public function postJson(string $url, array $payload = []): array
     {
-        return $this->parse(function () use ($url, $payload) {
+        return $this->parse(function () use ($url, $payload): ResponseInterface {
             return $this->client->post($this->server.$url, [
                 'json' => $payload,
                 'headers' => [
@@ -64,19 +71,29 @@ class ApiClient
         });
     }
 
-    private function parse(callable $callback)
+    /**
+     * @throws LinnworksResponseCouldNotBeParsed
+     */
+    private function parse(callable $callback): array
     {
-        $response = call_user_func($callback);
+        $response = $callback();
 
-        $json = json_decode((string) $response->getBody(), true);
+        $body = (string) $response->getBody();
 
-        if(json_last_error() !== JSON_ERROR_NONE){
-            $body = (string) $response->getBody();
-            if(! $body) return [];
+        if ($body === '') {
+            return [];
+        }
+
+        try {
+            $json = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            throw new LinnworksResponseCouldNotBeParsed($body);
+        }
+
+        if (! is_array($json)) {
             throw new LinnworksResponseCouldNotBeParsed($body);
         }
 
         return $json;
     }
-
 }
