@@ -16,16 +16,21 @@ use GuzzleHttp\Client as GuzzleClient;
 
 class Linnworks
 {
-    private const BASE_URI = 'https://api.linnworks.net';
+    public const BASE_URI = 'https://api.linnworks.net';
 
-    private GuzzleClient $client;
-    private string $bearer = '';
-    private string $server = '';
+    protected GuzzleClient $client;
+
+    protected array $config;
+
+    protected string $bearer = '';
+
+    protected string $server = '';
 
     public function __construct(
-        private readonly array $config,
+        array $config,
         ?GuzzleClient $client = null
     ) {
+        $this->config = $config;
         $this->client = $client ?? $this->makeClient();
 
         if (empty($this->bearer)) {
