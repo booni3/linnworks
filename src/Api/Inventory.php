@@ -23,6 +23,30 @@ class Inventory extends ApiClient
         ])['Items'] ?? [];
     }
 
+    public function AddInventoryItem(array $inventoryItem): array
+    {
+        return $this->postJson('Inventory/AddInventoryItem', [
+            'inventoryItem' => $inventoryItem,
+        ]);
+    }
+
+    public function AddInventoryItemBulk(array $inventoryItems): array
+    {
+        return $this->postJson('Inventory/AddInventoryItemBulk', [
+            'request' => [
+                'InventoryItems' => $inventoryItems,
+            ],
+        ]);
+    }
+
+    public function GetInventoryItem(string $sku = '', string $stockItemId = ''): array
+    {
+        return $this->get('Inventory/GetInventoryItem', [
+            'sKU' => $sku,
+            'stockItemId' => $stockItemId,
+        ]);
+    }
+
     public function GetInventoryItemById(string $id = '')
     {
         return $this->get('Inventory/GetInventoryItemById', compact('id'));
