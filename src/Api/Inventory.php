@@ -52,6 +52,15 @@ class Inventory extends ApiClient
         return $this->get('Inventory/GetInventoryItemById', compact('id'));
     }
 
+    public function UpdateInventoryItemField(string $inventoryItemId, string $fieldName, string $fieldValue): array
+    {
+        return $this->postJson('Inventory/UpdateInventoryItemField', [
+            'inventoryItemId' => $inventoryItemId,
+            'fieldName' => $fieldName,
+            'fieldValue' => $fieldValue,
+        ]);
+    }
+
     public function GetInventoryItemsCompositionByIds(array $ids): array
     {
         return $this->postJson('Inventory/GetInventoryItemsCompositionByIds', [

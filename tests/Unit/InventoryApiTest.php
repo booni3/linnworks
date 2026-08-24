@@ -26,6 +26,7 @@ class InventoryApiTest extends TestCase
             ])),
             new Response(200, [], json_encode(['StockItemId' => 'stock-item-id'])),
             new Response(200, [], json_encode(['ok' => true])),
+            new Response(200, [], json_encode(['updated' => true])),
         ]);
         $history = [];
         $handlerStack = HandlerStack::create($mock);
@@ -43,10 +44,12 @@ class InventoryApiTest extends TestCase
             'ItemNumber' => 'SKU-2',
             'ItemTitle' => 'Second SKU',
         ]);
+        $fieldResponse = $inventory->UpdateInventoryItemField('stock-item-id', 'Barcode', '5061020500000');
 
         $this->assertSame('SUCCESSFUL', $bulkResponse['ResultStatus']);
         $this->assertSame('stock-item-id', $getResponse['StockItemId']);
         $this->assertSame(['ok' => true], $singleResponse);
+        $this->assertSame(['updated' => true], $fieldResponse);
 
         $this->assertSame('Inventory/AddInventoryItemBulk', $this->requestPath($history[0]['request']));
         $this->assertSame([
@@ -68,6 +71,13 @@ class InventoryApiTest extends TestCase
                 'ItemTitle' => 'Second SKU',
             ],
         ], json_decode((string) $history[2]['request']->getBody(), true));
+
+        $this->assertSame('Inventory/UpdateInventoryItemField', $this->requestPath($history[3]['request']));
+        $this->assertSame([
+            'inventoryItemId' => 'stock-item-id',
+            'fieldName' => 'Barcode',
+            'fieldValue' => '5061020500000',
+        ], json_decode((string) $history[3]['request']->getBody(), true));
     }
 
     private function requestPath(Request $request): string
